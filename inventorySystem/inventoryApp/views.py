@@ -3,6 +3,7 @@ from .models import Category, Product, Log, RemovedProduct, ProductUser
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count
+from .utils import record_log
 
 # Create your views here.
 
@@ -16,8 +17,10 @@ def dashboard(request):
 
 @login_required
 def products(request):
-	products = Product.objects.all()
-	return render(request, 'products.html', {'products':products})
+    users = ProductUser.objects.all()
+    products = Product.objects.all()
+    categories = Category.objects.all()
+    return render(request, 'products.html', {'products':products, 'users':users, 'categories':categories})
 
 @login_required
 def categories(request):
@@ -41,7 +44,8 @@ def manage(request):
 @login_required
 def product_users(request):
     users = ProductUser.objects.all()
-    return render(request, 'product_users.html', {'users':users})
+    products = Product.objects.all()
+    return render(request, 'product_users.html', {'users':users, 'products':products})
 
 @login_required
 def add_product(request):
@@ -74,6 +78,13 @@ def add_product(request):
             user=product_user
         )
         product.save()
+
+        user_instance = ProductUser.objects.get(name=user_name)
+
+        # Record the log
+        action = "Add Product"
+        details = f"Product '{name}' added with stock {stock} in category '{category}'."
+        record_log(action, details, user_instance, product)
 
         # Success message
         messages.success(request, f"Product '{name}' added successfully.")

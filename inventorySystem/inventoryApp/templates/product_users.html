@@ -39,9 +39,9 @@
                                 <label for="product" class="form-label">Associated Product</label>
                                 <select class="form-select" id="product">
                                     <option selected>Select product</option>
-                                    <option value="1">Product 1</option>
-                                    <option value="2">Product 2</option>
-                                    <option value="3">Product 3</option>
+                                    {% for product in products %}
+                                        <option value="{{ product.name }}">{{ product.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
 

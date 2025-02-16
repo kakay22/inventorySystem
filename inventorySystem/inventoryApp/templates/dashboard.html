@@ -22,7 +22,7 @@
 			<!-- Overview Cards -->
 			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
 				<!-- Card 1 -->
-				<a href="{% url 'products' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center">
+				<a href="{% url 'products' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
 					<span class="material-icons text-blue-500 text-4xl mr-4">inventory</span>
 					<div>
 						<h2 class="text-lg font-bold text-gray-800">Total Products</h2>
@@ -31,7 +31,7 @@
 				</a>
 	
 				<!-- Card 2 -->
-				<a href="{% url 'categories' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center">
+				<a href="{% url 'categories' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
 					<span class="material-icons text-green-500 text-4xl mr-4">category</span>
 					<div>
 						<h2 class="text-lg font-bold text-gray-800">Categories</h2>
@@ -40,7 +40,7 @@
 				</a>
 	
 				<!-- Card 3 -->
-				<a href="{% url 'product_users' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center">
+				<a href="{% url 'product_users' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
 					<span class="material-icons text-4xl mr-4">groups</span>
 					<div>
 						<h2 class="text-lg font-bold text-gray-800">Product Users</h2>
@@ -66,7 +66,7 @@
 							<tbody>
 								{% for log in logs %}
 									<tr class="hover:bg-gray-100">
-										<td class="px-4 py-2">{{ log.date }}</td>
+										<td class="px-4 py-2">{{ log.created_at }}</td>
 										<td class="px-4 py-2">{{ log.action }}</td>
 										<td class="px-4 py-2">{{ log.user }}</td>
 										<td class="px-4 py-2">{{ log.details }}</td>
