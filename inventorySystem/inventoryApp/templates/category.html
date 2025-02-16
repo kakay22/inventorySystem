@@ -26,20 +26,21 @@
                 </div>
                 <!-- Modal Body -->
                 <div class="modal-body bg-light">
-                    <form>
+                    <form method="post" action="{% url 'add_category' %}" id="add_category_form">
+                        {% csrf_token %}
                         <!-- Category Name -->
                         <div class="mb-3">
                             <label for="categoryName" class="form-label fw-semibold">
                                 <span class="material-icons me-2 text-primary">label</span>Category Name
                             </label>
-                            <input type="text" class="form-control" id="categoryName" placeholder="Enter category name" required>
+                            <input type="text" class="form-control" name="category" id="categoryName" placeholder="Enter category name" required>
                         </div>
                         <!-- Category Description -->
                         <div class="mb-3">
                             <label for="categoryDescription" class="form-label fw-semibold">
                                 <span class="material-icons me-2 text-info">description</span>Category Description
                             </label>
-                            <textarea class="form-control" id="categoryDescription" rows="3" placeholder="Enter a short description" required></textarea>
+                            <textarea class="form-control" id="categoryDescription" name="category_description" rows="3" placeholder="Enter a short description" required></textarea>
                         </div>
                     </form>
                 </div>
@@ -48,7 +49,7 @@
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                         <span class="material-icons me-1">close</span>Cancel
                     </button>
-                    <button type="button" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" form="add_category_form">
                         <span class="material-icons me-1">save</span>Save Category
                     </button>
                 </div>

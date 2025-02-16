@@ -3,7 +3,7 @@ from .models import Category, Product, Log, RemovedProduct, ProductUser
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count
-from .utils import record_log
+from .utils import record_log  
 
 # Create your views here.
 
@@ -40,6 +40,13 @@ def edit_product(request, pk):
         product.category = category_instance
         product.stock = stock
         product.save()
+
+        # Record the log
+        product_user = product.user.name
+        user_instance = ProductUser.objects.get(name=product_user)
+        action = "edited product"
+        details = f"Product '{name}' has ben edited"
+        record_log(action, details, user_instance, product)
 
         # Return a success response
         # return JsonResponse({'success': True, 'message': 'Product updated successfully!'})
@@ -105,7 +112,6 @@ def add_product(request):
         product.save()
 
         user_instance = ProductUser.objects.get(name=user_name)
-
         # Record the log
         action = "Add Product"
         details = f"Product '{name}' added with stock {stock} in category '{category}'."
@@ -123,5 +129,35 @@ def add_product(request):
 def delete_product(request, pk):
     if request.method == 'POST':
         product = get_object_or_404(Product, pk=pk)
+
+        # Record the log
+        product_user = product.user.name
+        user_instance = ProductUser.objects.get(name=product_user)
+        action = "Deleted product"
+        details = f"Product '{product.name}' has ben deleted"
+        record_log(action, details, user_instance, product)
+        
         product.delete()
+
         return redirect('products')
+
+
+def add_category(request):
+    if request.method == 'POST':
+        category = request.POST.get('category')
+        category_description = request.POST.get('category_description')
+
+        Category.objects.create(
+            name=category,
+            description=category_description
+        )
+
+        # Record the log
+        product_user = 'N/A'
+        product = 'N/A'
+        user_instance = 'N/A'
+        action = "New category added"
+        details = f"Category '{category}' has ben added"
+        record_log(action, details, user_instance, product)
+
+        return redirect('categories')

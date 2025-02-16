@@ -34,8 +34,8 @@ class Product(models.Model):
 class Log(models.Model):
     action = models.CharField(max_length=100)
     details = models.TextField()
-    user = models.ForeignKey(ProductUser, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.CharField(max_length=100, blank=True, null=True)
+    product = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

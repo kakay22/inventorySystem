@@ -20,3 +20,4 @@ def record_log(action, details, user, product=None):
         product=product
     )
     return log
+
