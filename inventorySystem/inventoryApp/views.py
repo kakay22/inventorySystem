@@ -40,7 +40,8 @@ def manage(request):
 
 @login_required
 def product_users(request):
-	return render(request, 'product_users.html')
+    users = ProductUser.objects.all()
+    return render(request, 'product_users.html', {'users':users})
 
 @login_required
 def add_product(request):
