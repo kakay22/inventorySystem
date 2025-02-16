@@ -8,6 +8,11 @@
     <title>{% block title %}Products{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .search_input{
+            padding-left: 5rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 flex">
 
@@ -91,18 +96,21 @@
 
         <!-- Search Bar -->
         <div class="relative mb-8">
-            <input 
-                type="text" 
-                class="w-full p-3 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                placeholder="Search for products...">
-            <span class="material-icons absolute left-3 top-3 text-gray-400">search</span>
+            <input
+                type="text"
+                id="searchInput"
+                class="search_input w-full py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style="padding-left: 3rem;"
+                placeholder="Search for products..."
+            >
+            <span class="material-icons absolute left-3 top-5 text-gray-400">search</span>
         </div>
 
-        <!-- Products Table --> 
+        <!-- Products Table -->
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Product List</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left table-auto max-h-[15rem]">
+            <div class="overflow-x-auto max-h-[20rem]">
+                <table class="w-full text-left table-auto">
                     <thead>
                         <tr class="text-gray-700 border-b">
                             <th class="px-4 py-2">Image</th>
@@ -112,8 +120,8 @@
                             <th class="px-4 py-2">Stock</th>
                             <th class="px-4 py-2">Actions</th>
                         </tr>
-                    </thead>                    
-                    <tbody>
+                    </thead>
+                    <tbody id="productTable">
                         {% for product in products %}
                             <tr class="hover:bg-gray-100">
                                 <td class="px-4 py-2">
@@ -144,12 +152,43 @@
                                 </td>
                             </tr>
                         {% endfor %}
+                        <!-- No Results Message -->
+                        <tr id="noResultsMessage" class="hidden">
+                            <td colspan="6" class="text-center py-4 text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <span class="material-icons text-gray-400 text-5xl">search_off</span>
+                                    <p class="mt-2">No products found</p>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- JavaScript for Live Search -->
+        <script>
+            document.getElementById('searchInput').addEventListener('input', function () {
+                const searchValue = this.value.toLowerCase(); // Get input value and convert to lowercase
+                const rows = document.querySelectorAll('#productTable tr:not(#noResultsMessage)'); // Exclude "no results" row
+                let hasVisibleRows = false;
+
+                rows.forEach(row => {
+                    const productName = row.querySelector('td:nth-child(2)'); // Get product name cell
+                    if (productName) {
+                        const text = productName.textContent.toLowerCase();
+                        const matches = text.includes(searchValue); // Check if it matches
+                        row.style.display = matches ? '' : 'none';
+                        if (matches) hasVisibleRows = true;
+                    }
+                });
+
+                // Show or hide "No Results" message
+                const noResultsMessage = document.getElementById('noResultsMessage');
+                noResultsMessage.classList.toggle('hidden', hasVisibleRows);
+            });
+        </script>
     </div>
     {% endblock %}
-
 </body>
 </html>
