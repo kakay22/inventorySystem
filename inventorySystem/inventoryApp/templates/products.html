@@ -1,0 +1,148 @@
+{% extends 'sidebar.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Products{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex">
+
+    {% block content %}
+    <div class="flex-1 p-6 md:p-10">
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow-lg rounded-lg border-0">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-gray-800 text-white">
+                        <h1 class="modal-title fs-5 d-flex align-items-center" id="exampleModalLabel">
+                            <span class="material-icons me-2">add_circle</span>
+                            Add New Product
+                        </h1>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <!-- Modal Body -->
+                    <div class="modal-body bg-light">
+                        <form>
+                            <!-- Product Name -->
+                            <div class="mb-3">
+                                <label for="productName" class="form-label fw-semibold">
+                                    <span class="material-icons me-2 text-primary">inventory</span>Product Name
+                                </label>
+                                <input type="text" class="form-control" id="productName" placeholder="Enter product name" required>
+                            </div>
+                            <!-- Category -->
+                            <div class="mb-3">
+                                <label for="category" class="form-label fw-semibold">
+                                    <span class="material-icons me-2 text-success">category</span>Category
+                                </label>
+                                <select class="form-select" id="category" required>
+                                    <option value="" selected disabled>Choose category</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="apparel">Apparel</option>
+                                    <option value="home_appliances">Home Appliances</option>
+                                </select>
+                            </div>
+                            <!-- Stock -->
+                            <div class="mb-3">
+                                <label for="stock" class="form-label fw-semibold">
+                                    <span class="material-icons me-2 text-warning">inventory_2</span>Stock Quantity
+                                </label>
+                                <input type="number" class="form-control" id="stock" placeholder="Enter stock quantity" required>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer bg-gray-200">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <span class="material-icons me-1">close</span>Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                            <span class="material-icons me-1">save</span>Save Product
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <header class="mb-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Products</h1>
+                <p class="text-gray-600">Manage your inventory and view product details.</p>
+            </div>
+            <!-- Button trigger modal -->
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow flex items-center transition duration-300" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <span class="material-icons mr-2">add</span>Add Product
+            </button>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="relative mb-8">
+            <input 
+                type="text" 
+                class="w-full p-3 pl-10 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                placeholder="Search for products...">
+            <span class="material-icons absolute left-3 top-3 text-gray-400">search</span>
+        </div>
+
+        <!-- Products Table --> 
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Product List</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left table-auto max-h-[15rem]">
+                    <thead>
+                        <tr class="text-gray-700 border-b">
+                            <th class="px-4 py-2">Image</th>
+                            <th class="px-4 py-2">Name</th>
+                            <th class="px-4 py-2">User</th>
+                            <th class="px-4 py-2">Category</th>
+                            <th class="px-4 py-2">Stock</th>
+                            <th class="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>                    
+                    <tbody>
+                        {% for product in products %}
+                            <tr class="hover:bg-gray-100">
+                                <td class="px-4 py-2">
+                                    <img class="w-10 h-10 rounded-lg" src="/media/products/laptop.jpg" alt="Product Image">
+                                </td>
+                                <td class="px-4 py-2">{{ product.name }}</td>
+                                <td class="px-4 py-2">{{ product.user }}</td>
+                                <td class="px-4 py-2">{{ product.category }}</td>
+                                <td class="px-4 py-2">{{ product.stock }}</td>
+                                <td class="px-4 py-2">
+                                    <div class="flex space-x-2">
+                                        <button class="bg-green-500 hover:bg-green-600 text-white rounded-lg p-2 flex items-center">
+                                            <span class="material-icons text-sm">edit</span>
+                                        </button>
+                                        <button class="bg-red-500 hover:bg-red-600 text-white rounded-lg p-2 flex items-center">
+                                            <span class="material-icons text-sm">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-gray-500">
+                                    <div class="flex flex-col items-center">
+                                        <span class="material-icons text-gray-400 text-5xl">inventory</span>
+                                        <p class="mt-2">No products available</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+{% extends 'sidebar.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Log History{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex">
+
+    {% block content %}
+    <!-- Main Log History Content -->
+    <div class="flex-1 p-6 md:p-10">
+        <header class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Log History</h1>
+            <p class="text-gray-600">Track all activities and changes made within the system.</p>
+        </header>
+
+        <!-- Search Bar and Filter Options -->
+        <div class="mb-6 flex justify-between items-center">
+            <!-- Search Bar -->
+            <div class="flex items-center bg-white border rounded-lg shadow px-4 py-2 w-full md:w-1/3">
+                <span class="material-icons text-gray-500">search</span>
+                <input 
+                    type="text" 
+                    placeholder="Search logs..." 
+                    class="w-full outline-none px-2 text-gray-700"
+                />
+            </div>
+            <!-- Filter Dropdown -->
+            <div class="relative">
+                <button class="flex items-center bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow hover:bg-gray-300">
+                    <span class="material-icons mr-2">filter_list</span>
+                    Filter
+                </button>
+                <div class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg z-10 hidden">
+                    <ul>
+                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Today</li>
+                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">This Week</li>
+                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">This Month</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Table -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Activity Logs</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left table-auto">
+                    <thead>
+                        <tr class="text-gray-700 border-b">
+                            <th class="px-4 py-2">#</th>
+                            <th class="px-4 py-2">Date</th>
+                            <th class="px-4 py-2">Action</th>
+                            <th class="px-4 py-2">User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                            <tr class="hover:bg-gray-100">
+                                <td class="px-4 py-2">{{ forloop.counter }}</td>
+                                <td class="px-4 py-2">{{ log.created_at }}</td>
+                                <td class="px-4 py-2">{{ log.action }}</td>
+                                <td class="px-4 py-2">{{ log.user }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+</body>
+</html>

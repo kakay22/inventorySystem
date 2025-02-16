@@ -1,0 +1,122 @@
+{% extends 'sidebar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Users</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+	{% block content %}
+    <div class="container mx-auto p-6">
+
+        <!-- Add Product Users Modal -->
+        <div class="modal fade" id="addProductUserModal" tabindex="-1" aria-labelledby="addProductUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title d-flex align-items-center" id="addProductUserModalLabel">
+                            <span class="material-icons me-2">person_add</span> Add Product User
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="modal-body">
+                        <form>
+                            <!-- User Name -->
+                            <div class="mb-3">
+                                <label for="userName" class="form-label">User Name</label>
+                                <input type="text" class="form-control" id="userName" placeholder="Enter user's name">
+                            </div>
+
+                            <!-- Associated Product -->
+                            <div class="mb-3">
+                                <label for="product" class="form-label">Associated Product</label>
+                                <select class="form-select" id="product">
+                                    <option selected>Select product</option>
+                                    <option value="1">Product 1</option>
+                                    <option value="2">Product 2</option>
+                                    <option value="3">Product 3</option>
+                                </select>
+                            </div>
+
+                            <!-- Contact Information -->
+                            <div class="mb-3">
+                                <label for="contactInfo" class="form-label">Contact Information</label>
+                                <input type="email" class="form-control" id="contactInfo" placeholder="Enter user's email">
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary">
+                            <span class="material-icons me-1">save</span> Save User
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    
+        <!-- Page Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-700">Product Users</h1>
+            <!-- Add Product Users Button -->
+            <a href="#" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center" data-bs-toggle="modal" data-bs-target="#addProductUserModal">
+                <span class="material-icons mr-2">add</span> Add User
+            </a>
+        </div>
+
+        <!-- User Table -->
+        <div class="bg-white rounded-lg shadow-lg p-4">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-200 text-gray-700 border-b">
+                        <th class="px-4 py-2">Name</th>
+                        <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Phone</th>
+                        <th class="px-4 py-2">Products Managed</th>
+                        <th class="px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="border-b hover:bg-gray-100">
+                        <td class="px-4 py-2">{{ user.name }}</td>
+                        <td class="px-4 py-2">{{ user.email|default:"N/A" }}</td>
+                        <td class="px-4 py-2">{{ user.phone|default:"N/A" }}</td>
+                        <td class="px-4 py-2">{{ user.product_set.count }}</td>
+                        <td class="px-4 py-2">
+                            <div class="flex space-x-2">
+                                <a href="{% url 'view_user' user.id %}" class="text-blue-500 hover:underline">
+                                    <span class="material-icons">visibility</span>
+                                </a>
+                                <a href="{% url 'edit_user' user.id %}" class="text-green-500 hover:underline">
+                                    <span class="material-icons">edit</span>
+                                </a>
+                                <a href="{% url 'delete_user' user.id %}" class="text-red-500 hover:underline">
+                                    <span class="material-icons">delete</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-gray-500 py-4">No users found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+	{% endblock %}
+</body>
+</html>

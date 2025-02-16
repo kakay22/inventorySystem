@@ -1,0 +1,110 @@
+{% extends 'sidebar.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Categories{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex">
+
+    {% block content %}
+    
+    <!-- Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg rounded-lg border-0">
+                <!-- Modal Header -->
+                <div class="modal-header bg-gray-800 text-white">
+                    <h1 class="modal-title fs-5 d-flex align-items-center" id="addCategoryLabel">
+                        <span class="material-icons me-2">category</span>
+                        Add New Category
+                    </h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body bg-light">
+                    <form>
+                        <!-- Category Name -->
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label fw-semibold">
+                                <span class="material-icons me-2 text-primary">label</span>Category Name
+                            </label>
+                            <input type="text" class="form-control" id="categoryName" placeholder="Enter category name" required>
+                        </div>
+                        <!-- Category Description -->
+                        <div class="mb-3">
+                            <label for="categoryDescription" class="form-label fw-semibold">
+                                <span class="material-icons me-2 text-info">description</span>Category Description
+                            </label>
+                            <textarea class="form-control" id="categoryDescription" rows="3" placeholder="Enter a short description" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer bg-gray-200">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <span class="material-icons me-1">close</span>Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        <span class="material-icons me-1">save</span>Save Category
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Categories Content -->
+    <div class="flex-1 p-6 md:p-10">
+        <header class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Categories</h1>
+            <p class="text-gray-600">Manage and organize your product categories here.</p>
+        </header>
+
+        <!-- Add Category Button -->
+         <!-- Button trigger modal -->
+        <div class="mb-6 flex justify-end">
+            <button class="flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <span class="material-icons mr-2">add</span>
+                Add Category
+            </button>
+        </div>
+
+        <!-- Categories Table -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Category List</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left table-auto">
+                    <thead>
+                        <tr class="text-gray-700 border-b">
+                            <th class="px-4 py-2">#</th>
+                            <th class="px-4 py-2">Category Name</th>
+                            <th class="px-4 py-2">Description</th>
+                            <th class="px-4 py-2">Total Products</th>
+                            <th class="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr class="hover:bg-gray-100">
+                                <td class="px-4 py-2">{{ forloop.counter }}</td>
+                                <td class="px-4 py-2">{{ category.name }}</td>
+                                <td class="px-4 py-2">{{ category.description }}</td>
+                                <td class="px-4 py-2">{{ category.total_items }}</td>
+                                <td class="px-4 py-2">
+                                    <button class="text-blue-500 hover:underline mr-2">Edit</button>
+                                    <button class="text-red-500 hover:underline">Delete</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+</body>
+</html>
