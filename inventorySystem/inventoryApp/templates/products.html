@@ -133,38 +133,149 @@
                                 <td class="px-4 py-2">{{ product.stock }}</td>
                                 <td class="px-4 py-2">
                                     <div class="flex space-x-2">
-                                        <button class="bg-green-500 hover:bg-green-600 text-white rounded-lg p-2 flex items-center">
+                                        <!-- Edit Button -->
+                                        <button 
+                                            class="bg-green-500 hover:bg-green-600 text-white rounded-lg p-2 flex items-center"
+                                            onclick="openModal('{{ product.id }}')">
                                             <span class="material-icons text-sm">edit</span>
                                         </button>
-                                        <button class="bg-red-500 hover:bg-red-600 text-white rounded-lg p-2 flex items-center">
+                                        <!-- Delete Button -->
+                                        <button class="bg-red-500 hover:bg-red-600 text-white rounded-lg p-2 flex items-center" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                             <span class="material-icons text-sm">delete</span>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="6" class="text-center py-4 text-gray-500">
-                                    <div class="flex flex-col items-center">
-                                        <span class="material-icons text-gray-400 text-5xl">inventory</span>
-                                        <p class="mt-2">No products available</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        <!-- No Results Message -->
-                        <tr id="noResultsMessage" class="hidden">
-                            <td colspan="6" class="text-center py-4 text-gray-500">
-                                <div class="flex flex-col items-center">
-                                    <span class="material-icons text-gray-400 text-5xl">search_off</span>
-                                    <p class="mt-2">No products found</p>
+
+                            <!-- Edit Product Modal -->
+                                <div 
+                                id="editModal" 
+                                class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+                                <div class="bg-white rounded-lg p-6 w-1/2">
+                                    <h3 class="text-lg font-bold mb-4">Edit Product</h3>
+                                    <form id="editForm" method="post" action="{% url 'edit_product' product.pk %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" id="productId" name="product_id">
+                                        <div class="mb-4">
+                                            <label for="productName" class="block text-sm font-medium text-gray-700">Name</label>
+                                            <input 
+                                                type="text" 
+                                                id="productName" 
+                                                name="name" 
+                                                class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" 
+                                                value="{{ product.name }}"
+                                            >
+                                        </div>
+                                        <!-- <div class="mb-4">
+                                            <label for="productCategory" class="block text-sm font-medium text-gray-700">Category</label>
+                                            <input 
+                                                type="text" 
+                                                id="productCategory" 
+                                                name="category" 
+                                                class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" 
+                                                value="{{ product.category }}"
+                                            >
+                                        </div> -->
+                                        <div class="mb-4">
+                                            <label for="productCategory" class="block text-sm font-medium text-gray-700">Category</label>
+                                            <select id="productCategory" name="category" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                                {% for category in categories %}
+                                                    <option value="{{ product.category }}" {% if product.category == product.category %}selected{% endif %}>
+                                                        {{ category.name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>                                        
+                                        <div class="mb-4">
+                                            <label for="productStock" class="block text-sm font-medium text-gray-700">Stock</label>
+                                            <input 
+                                                type="number" 
+                                                id="productStock" 
+                                                name="stock" 
+                                                class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500" 
+                                                value="{{ product.stock }}"
+                                            >
+                                        </div>
+                                        <div class="flex justify-end space-x-2">
+                                            <button 
+                                                type="button" 
+                                                class="bg-gray-500 text-white px-4 py-2 rounded-lg"
+                                                onclick="closeModal()">
+                                                Cancel
+                                            </button>
+                                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                                                Save
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
-                            </td>
-                        </tr>
+                            </div>
+                            
+                            <!--Delete Modal -->
+                            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="deleteModalLabel">Delete {{ product.name }}?</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body flex justify-center flex-col items-center">
+                                        <h2 class="font-bold text-[1rem]">Are you sure you wan't to delete this product?</h2>
+                                        <p class="text-sm text-gray-500">Changes cannot be undone</p>
+                                    </div>
+                                    <form id="deleteForm" action="{% url 'delete_product' product.pk %}" method="post">
+                                        {% csrf_token %}
+                                    </form>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" form="deleteForm" class="btn btn-primary bg-red-600 border-0 hover:bg-red-500">Delete</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- JavaScript for Modal -->
+        <script>
+            function openModal(productId) {
+                const modal = document.getElementById('editModal');
+                const productName = document.getElementById('productName');
+                const productCategory = document.getElementById('productCategory');
+                const productStock = document.getElementById('productStock');
+                const productIdInput = document.getElementById('productId');
+
+                // // Find product data dynamically (or pass it as a parameter)
+                // const row = document.querySelector(`[onclick="openModal('${productId}')"]`).closest('tr');
+                // productName.value = row.querySelector('td:nth-child(2)').textContent.trim();
+                // productCategory.value = row.querySelector('td:nth-child(4)').textContent.trim();
+                // productStock.value = row.querySelector('td:nth-child(5)').textContent.trim();
+                // productIdInput.value = productId;
+
+                modal.classList.remove('hidden');
+            }
+
+            function closeModal() {
+                const modal = document.getElementById('editModal');
+                modal.classList.add('hidden');
+            }
+
+            // document.getElementById('editForm').addEventListener('submit', function (e) {
+            //     e.preventDefault();
+            //     // Handle form submission logic here
+            //     console.log('Form submitted with:', {
+            //         id: document.getElementById('productId').value,
+            //         name: document.getElementById('productName').value,
+            //         category: document.getElementById('productCategory').value,
+            //         stock: document.getElementById('productStock').value,
+            //     });
+            //     closeModal();
+            // });
+        </script>
 
         <!-- JavaScript for Live Search -->
         <script>

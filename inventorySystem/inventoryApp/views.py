@@ -22,6 +22,31 @@ def products(request):
     categories = Category.objects.all()
     return render(request, 'products.html', {'products':products, 'users':users, 'categories':categories})
 
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+def edit_product(request, pk):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        category = request.POST.get('category')
+        stock = request.POST.get('stock')
+
+        category_instance = get_object_or_404(Category, name=category)
+
+        # Find the product and update its fields
+        product = get_object_or_404(Product, id=pk)
+        product.name = name
+        product.category = category_instance
+        product.stock = stock
+        product.save()
+
+        # Return a success response
+        # return JsonResponse({'success': True, 'message': 'Product updated successfully!'})
+        return redirect('products')
+    return JsonResponse({'success': False, 'message': 'Invalid request method!'})
+
+
 @login_required
 def categories(request):
     # Annotate each category with the count of related products
@@ -93,3 +118,10 @@ def add_product(request):
     # Fetch users to populate the dropdown
     users = ProductUser.objects.all()
     return render(request, 'add_product.html', {'users': users})
+
+
+def delete_product(request, pk):
+    if request.method == 'POST':
+        product = get_object_or_404(Product, pk=pk)
+        product.delete()
+        return redirect('products')
