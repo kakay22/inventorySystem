@@ -11,15 +11,17 @@ class Category(models.Model):
 
 class ProductUser(models.Model):
     name = models.CharField(max_length=255)
+    phone = models.BigIntegerField(blank=True, null=True)
     email = models.EmailField(blank=True, null=True)  # Optional
-    phone = models.CharField(max_length=15, blank=True, null=True)  # Optional
+    profile_pic = models.ImageField(upload_to='profile_pics/', blank=True, null=True, default='profile_pics/default.jpg')
 
     def __str__(self):
         return self.name
 
+
 class Product(models.Model):
     name = models.CharField(max_length=200)
-    user = models.ForeignKey(ProductUser, on_delete=models.SET_NULL, null=True, blank=True)  # Optional user
+    user = models.ForeignKey(ProductUser, related_name='products', on_delete=models.SET_NULL, null=True, blank=True)  # Optional user
     # image = models.ImageField(upload_to='products/')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     stock = models.PositiveIntegerField()

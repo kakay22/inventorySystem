@@ -2,128 +2,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Inventory System</title>
-	<!--tailwind-->
-	<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<!--bootstrap css-->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-	<!--material icons-->
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<style>
-		.form-control{
-			padding-left: 3rem !important;
-		}
-	</style>
+    <style>
+        .form-control {
+            padding-left: 3rem !important;
+        }
+    </style>
 </head>
-<body class="h-[100dvh] w-[100dvw] flex justify-center items-center">
+<body class="h-screen w-screen flex justify-center items-center bg-gray-50" style="background-image: url('{% static "evsu_bg.jpg" %}');">
+    <!--white transparent-->
+    <div class="h-screen w-screen bg-white/90 absolute left-0 top-0"></div>
 
-	<main class="w-[70%] h-[80%] rounded-lg overflow-hidden shadow-gray-500 shadow-lg flex justify-center items-center bg-gray-100">
+    <main class="w-[95%] sm:w-[85%] md:w-[70%] xl:w-[85%] h-[90%] lg:h-[85%] rounded-lg overflow-hidden shadow-lg flex flex-col lg:flex-row justify-center items-center bg-white z-[999]">
 
-		<!--image-->
-		<div 
-			class="w-[55%] h-full bg-no-repeat bg-center bg-cover relative" 
-			style="background-image: url('{% static "warehouse-interior-with-cardboard-boxes-racks_107791-1120.avif" %}'); clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);"> 
+        <div 
+			class="w-full lg:w-[55%] h-[40%] lg:h-full bg-no-repeat bg-center bg-cover relative" 
+			style="background-image: url('{% static "evsu_bg.jpg" %}');">
+			
+			<div class="w-full h-full flex flex-col items-center justify-start px-4 lg:px-6 gap-5 py-3 relative">
+                <!-- Header Section -->
+                <div class="w-full bg-black/30 backdrop-blur-sm absolute top-0 left-0 py-3 px-5 md:px-8 lg:px-10 shadow-md">
+                    <div class="max-w-7xl mx-auto flex items-center justify-between">
+                        <!-- Logo -->
+                        <img src="{% static 'evsuLogo.jpg' %}" alt="EVSU Logo"
+                            class="h-12 md:h-10 lg:h-14 rounded-full object-cover border-4 border-white shadow-lg">
 
-			<!-- Dark Overlay -->
-			<div class="w-full h-full bg-black/50 flex flex-col items-center justify-center">
-				<!-- Title Section -->
-				<h1 class="text-4xl lg:text-5xl font-bold text-white tracking-wide mb-4 text-center drop-shadow-md">
-					INVENTORY SYSTEMS
-				</h1>
-				<!-- Subtitle Section -->
-				<p class="text-white text-lg lg:text-xl text-center max-w-[80%] mx-auto drop-shadow-sm">
-					Manage and track your inventory seamlessly with our powerful system.
-				</p>
-			</div>
+                        <!-- Title -->
+                        <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-white tracking-wide text-center flex-grow">
+                            PRINTING PRESS OFFICE
+                        </h1>
+                    </div>
+                </div>
+            </div>            
 		</div>
 
-		<!--form-->
-		<div class="w-[45%] p-4">
-			<form action="{% url 'main' %}" method="post">
-				{% csrf_token %}
+        <!-- Form Section -->
+        <div class="w-full lg:w-[45%] p-6 lg:p-8">
+            <form action="{% url 'main' %}" method="post">
+                {% csrf_token %}
 
-				<h2 class="w-full text-center mb-3">Login</h2>
+                <h2 class="text-center text-2xl font-semibold mb-4">Login</h2>
 
-				{% if messages %}
-					<div class="mb-4">
-						{% for message in messages %}
-							<div class="flex items-center justify-between bg-red-100 text-red-700 p-3 rounded-lg shadow-md relative">
-								<p>{{ message }}</p>
-								<button
-									type="button"
-									class="ml-4 text-red-700 hover:text-red-900 focus:outline-none" 
-									onclick="this.parentElement.style.display='none'">
-									✖
-							</button>
-							</div>
-						{% endfor %}
-					</div>
-				{% endif %}
-	
-				<div class="mb-3">
-					<label for="username" class="form-label">Username</label>
-					<div class="relative">
-					  <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-						<i class="material-icons text-gray-500">person</i>
-					  </span>
-					  <input 
-						type="text" 
-						id="username" 
-						class="form-control pl-10 border border-gray-300 rounded-md w-full p-2 focus:ring-blue-500 focus:border-blue-500" 
-						placeholder="username" 
-						name="username"
-						value="{{ username }}">
-					</div>
-				  </div>
-				  
-				  <div class="mb-3">
-					<label for="password" class="form-label">Password</label>
-					<div class="relative">
-						<!-- Lock icon -->
-						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-							<i class="material-icons text-gray-500">lock</i>
-						</span>
-						<!-- Password input field -->
-						<input 
-							type="password" 
-							id="password" 
-							class="form-control pl-10 border border-gray-300 rounded-md w-full p-2 focus:ring-blue-500 focus:border-blue-500" 
-							placeholder="password" 
-							name="password"
-							value="{{ password }}">
-						<!-- Show/Hide password eye icon -->
-						<span 
-							class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" 
-							id="togglePassword">
-							<i class="material-icons text-gray-500">visibility</i>
-						</span>
-					</div>
-				</div>
+                {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                            <div class="flex items-center justify-between bg-red-100 text-red-700 p-3 rounded-lg shadow-md relative">
+                                <p>{{ message }}</p>
+                                <button
+                                    type="button"
+                                    class="ml-4 text-red-700 hover:text-red-900 focus:outline-none" 
+                                    onclick="this.parentElement.style.display='none'">
+                                    ✖
+                                </button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
-				<!-- Add this script at the end of your file or inside a <script> tag -->
-				<script>
-					const togglePassword = document.querySelector("#togglePassword");
-					const passwordInput = document.querySelector("#password");
+                <div class="mb-2">
+                    <label for="username" class="block text-gray-700 font-medium mb-2">Username</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="material-icons text-gray-500">person</i>
+                        </span>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            class="form-control pl-10 border border-gray-500 rounded-md w-full p-3 focus:ring-blue-500 focus:border-blue-500" 
+                            placeholder="Username" 
+                            name="username"
+                            value="{{ username }}">
+                    </div>
+                </div>
 
-					togglePassword.addEventListener("click", function () {
-						// Toggle the type attribute
-						const type = passwordInput.type === "password" ? "text" : "password";
-						passwordInput.type = type;
+                <div class="mb-2">
+                    <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="material-icons text-gray-500">lock</i>
+                        </span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="form-control pl-10 border border-gray-500 rounded-md w-full p-3 focus:ring-blue-500 focus:border-blue-500" 
+                            placeholder="Password" 
+                            name="password">
+                        <span 
+                            class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" 
+                            id="togglePassword">
+                            <i class="material-icons text-gray-500">visibility</i>
+                        </span>
+                    </div>
+                </div>
 
-						// Change the icon
-						this.querySelector("i").textContent = 
-							type === "password" ? "visibility" : "visibility_off";
-					});
-				</script>
+                <button type="submit" class="btn btn-primary py-[.8rem] mt-2 border-0 shadow-md w-full bg-teal-600 text-white hover:bg-teal-700 focus:outline-none focus:ring focus:ring-teal-500">
+                    Login
+                </button>
+            </form>
+        </div>
+    </main>
 
-				  
-				  <button type="submit" class="btn btn-primary w-full bg-teal-600 text-white">Login</button>
-			</form>
-		</div>
-	</main>
+    <!-- Show/Hide Password Script -->
+    <script>
+        const togglePassword = document.querySelector("#togglePassword");
+        const passwordInput = document.querySelector("#password");
+
+        togglePassword.addEventListener("click", function () {
+            const type = passwordInput.type === "password" ? "text" : "password";
+            passwordInput.type = type;
+
+            this.querySelector("i").textContent = type === "password" ? "visibility" : "visibility_off";
+        });
+    </script>
 </body>
-<!--bootstrap js-->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </html>

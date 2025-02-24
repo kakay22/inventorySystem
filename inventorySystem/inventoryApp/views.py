@@ -22,6 +22,37 @@ def products(request):
     categories = Category.objects.all()
     return render(request, 'products.html', {'products':products, 'users':users, 'categories':categories})
 
+def increase_stock(request):
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        quantity = int(request.POST.get("quantity", 0))
+
+        product = get_object_or_404(Product, id=product_id)
+
+        if quantity > 0:
+            product.stock += quantity
+            product.save()
+            messages.success(request, f"Successfully added {quantity} to {product.name}'s stock.")
+        else:
+            messages.error(request, "Invalid quantity entered.")
+
+    return redirect("manage")  # Change to your actual product listing URL
+
+def decrease_stock(request):
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        quantity = int(request.POST.get("quantity", 0))
+
+        product = get_object_or_404(Product, id=product_id)
+
+        if quantity > 0 and product.stock >= quantity:
+            product.stock -= quantity
+            product.save()
+            messages.success(request, f"Successfully removed {quantity} from {product.name}'s stock.")
+        else:
+            messages.error(request, "Invalid quantity or insufficient stock.")
+
+    return redirect("manage")  # Change to your actual product listing URL
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -75,9 +106,29 @@ def manage(request):
 
 @login_required
 def product_users(request):
-    users = ProductUser.objects.all()
-    products = Product.objects.all()
-    return render(request, 'product_users.html', {'users':users, 'products':products})
+    users = ProductUser.objects.annotate(product_count=Count("products"))  # Count products per user
+    return render(request, 'product_users.html', {'users': users})
+
+def edit_user(request, pk):
+    user = get_object_or_404(ProductUser, pk=pk)
+
+    if request.method == 'POST':
+        username = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+
+        if username and email:
+            user.name = username
+            user.email = email
+            user.phone = phone
+            user.save()
+
+            return redirect('product_users')
+
+def delete_user(request, pk):
+    user = get_object_or_404(ProductUser, pk=pk)
+    user.delete()
+    return redirect('product_users')
 
 @login_required
 def add_product(request):
@@ -113,7 +164,7 @@ def add_product(request):
 
         user_instance = ProductUser.objects.get(name=user_name)
         # Record the log
-        action = "Add Product"
+        action = "Added Product"
         details = f"Product '{name}' added with stock {stock} in category '{category}'."
         record_log(action, details, user_instance, product)
 
@@ -161,3 +212,65 @@ def add_category(request):
         record_log(action, details, user_instance, product)
 
         return redirect('categories')
+
+def edit_category(request, pk):
+
+    category = get_object_or_404(Category, pk=pk)
+
+    if request.method == 'POST':
+        category_name = request.POST.get('category_name')
+        description = request.POST.get('category_description')
+
+        if category_name and description:
+            category.name = category_name
+            category.description = description
+
+            # Record the log
+            product_user = 'N/A'
+            product = 'N/A'
+            user_instance = 'N/A'
+            action = f"category updated"
+            details = f"Category '{category}' has ben updated"
+            record_log(action, details, user_instance, product)
+
+            category.save()
+
+            return redirect('categories')
+
+def delete_category(request, pk):
+    if request.method == 'POST':
+        category = get_object_or_404(Category, pk=pk)
+
+        # Record the log
+        product_user = 'N/A'
+        product = 'N/A'
+        user_instance = 'N/A'
+        action = f"category deleted"
+        details = f"Category '{category}' has ben deleted"
+        record_log(action, details, user_instance, product)        
+
+        category.delete()
+        return redirect('categories')
+
+
+def add_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+
+        if username and email:
+            # Create user
+            new_user = ProductUser.objects.create(
+                name=username,
+                email=email
+            )
+
+            # Record the log
+            action = "User Added"
+            details = f"User '{new_user.name}' with email '{new_user.email}' has been added."
+            user_instance = new_user  # Logging the actual user instance
+            product = 'N/A'  # Update if necessary
+
+            record_log(action, details, user_instance, product)
+
+        return redirect('product_users')

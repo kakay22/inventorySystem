@@ -27,28 +27,30 @@
 
                     <!-- Modal Body -->
                     <div class="modal-body">
-                        <form>
+                        <form method="post" action="{% url 'add_user' %}" id="user_form">
+                            {% csrf_token %}
+
                             <!-- User Name -->
                             <div class="mb-3">
                                 <label for="userName" class="form-label">User Name</label>
-                                <input type="text" class="form-control" id="userName" placeholder="Enter user's name">
+                                <input type="text" class="form-control" name="username" id="userName" placeholder="Enter user's name">
                             </div>
 
-                            <!-- Associated Product -->
+                            <!-- Associated Product
                             <div class="mb-3">
                                 <label for="product" class="form-label">Associated Product</label>
-                                <select class="form-select" id="product">
+                                <select class="form-select" id="product" name="product">
                                     <option selected>Select product</option>
                                     {% for product in products %}
                                         <option value="{{ product.name }}">{{ product.name }}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
+                            </div> -->
 
                             <!-- Contact Information -->
                             <div class="mb-3">
                                 <label for="contactInfo" class="form-label">Contact Information</label>
-                                <input type="email" class="form-control" id="contactInfo" placeholder="Enter user's email">
+                                <input type="email" class="form-control" name="email" id="contactInfo" placeholder="Enter user's email">
                             </div>
                         </form>
                     </div>
@@ -56,7 +58,7 @@
                     <!-- Modal Footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary" form="user_form">
                             <span class="material-icons me-1">save</span> Save User
                         </button>
                     </div>
@@ -75,10 +77,11 @@
         </div>
 
         <!-- User Table -->
-        <div class="bg-white rounded-lg shadow-lg p-4">
+        <div class="bg-white rounded-lg shadow-lg p-4 overflow-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-200 text-gray-700 border-b">
+                        <th class="px-4 py-2">Image</th>
                         <th class="px-4 py-2">Name</th>
                         <th class="px-4 py-2">Email</th>
                         <th class="px-4 py-2">Phone</th>
@@ -89,24 +92,105 @@
                 <tbody>
                     {% for user in users %}
                     <tr class="border-b hover:bg-gray-100">
+                        <td class="px-4 py-2">
+                            <img src="{{ user.profile_pic.url }}" alt="pic" srcset="">
+                        </td>
                         <td class="px-4 py-2">{{ user.name }}</td>
                         <td class="px-4 py-2">{{ user.email|default:"N/A" }}</td>
                         <td class="px-4 py-2">{{ user.phone|default:"N/A" }}</td>
-                        <td class="px-4 py-2">{{ user.product_set.count }}</td>
+                        <td class="px-4 py-2">{{ user.product_count }}</td>
                         <td class="px-4 py-2">
-                            <div class="flex space-x-2">
-                                <a href="" class="text-blue-500 hover:underline">
+                            <div class="flex">
+                                <!-- View Button -->
+                                <button data-bs-toggle="modal" data-bs-target="#viewUserModal{{ user.id }}" class="text-blue-500 hover:underline hover:bg-gray-300 p-2">
                                     <span class="material-icons">visibility</span>
-                                </a>
-                                <a href="" class="text-green-500 hover:underline">
+                                </button>
+
+                                <!-- Edit Button -->
+                                <button data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}" class="text-green-500 hover:underline hover:bg-gray-300 p-2">
                                     <span class="material-icons">edit</span>
-                                </a>
-                                <a href="" class="text-red-500 hover:underline">
+                                </button>
+
+                                <!-- Delete Button -->
+                                <button data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}" class="text-red-500 hover:underline hover:bg-gray-300 p-2">
                                     <span class="material-icons">delete</span>
-                                </a>
+                                </button>
                             </div>
                         </td>
                     </tr>
+
+                    <!-- View User Modal -->
+                    <div class="modal fade" id="viewUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-3 shadow">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title">User Details</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <p class="mb-2"><strong>Name:</strong> {{ user.name }}</p>
+                                    <p class="mb-2"><strong>Email:</strong> {{ user.email|default:"N/A" }}</p>
+                                    <p class="mb-2"><strong>Phone:</strong> {{ user.phone|default:"N/A" }}</p>
+                                    <p><strong>Products Managed:</strong> {{ user.product_count }}</p>
+                                </div>
+                                <div class="modal-footer bg-light">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Edit User Modal -->
+                    <div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-3 shadow">
+                                <div class="modal-header bg-warning text-white">
+                                    <h5 class="modal-title">Edit User</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{% url 'edit_user' user.pk %}" method="POST">
+                                    {% csrf_token %}
+                                    <div class="modal-body p-4">
+                                        <label class="form-label fw-bold">Name</label>
+                                        <input type="text" name="name" class="form-control rounded-2" value="{{ user.name }}" required>
+
+                                        <label class="form-label mt-3 fw-bold">Email</label>
+                                        <input type="email" name="email" class="form-control rounded-2" value="{{ user.email }}" required>
+
+                                        <label class="form-label mt-3 fw-bold">Phone</label>
+                                        <input type="text" name="phone" class="form-control rounded-2" value="{{ user.phone }}">
+                                    </div>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-success">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delete User Modal -->
+                    <div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-3 shadow">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title">Confirm Deletion</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body p-4 text-center">
+                                    <p class="fs-5">Are you sure you want to delete <strong>{{ user.name }}</strong>?</p>
+                                    <form action="{% url 'delete_user' user.pk %}" method="post" id="deleteForm{{ user.pk }}">
+                                        {% csrf_token %}
+                                    </form>
+                                </div>
+                                <div class="modal-footer bg-light d-flex justify-content-center">
+                                    <button type="button"  class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="submit" form="deleteForm{{ user.pk }}" class="btn btn-danger">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {% empty %}
                     <tr>
                         <td colspan="5" class="text-center text-gray-500 py-4">No users found.</td>

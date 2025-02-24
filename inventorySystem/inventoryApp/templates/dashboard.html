@@ -9,81 +9,83 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body class="bg-gray-100 flex">
+<body class="bg-gray-100 h-screen flex overflow-auto">
 
     {% block content %}
-		<!-- Main Dashboard Content -->
-		<div class="flex-1 p-6 md:p-10">
-			<header class="mb-6">
-				<h1 class="text-3xl font-bold text-gray-800">Welcome to the Dashboard</h1>
-				<p class="text-gray-600">Here's an overview of your inventory system's performance.</p>
-			</header>
-	
-			<!-- Overview Cards -->
-			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-				<!-- Card 1 -->
-				<a href="{% url 'products' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
-					<span class="material-icons text-blue-500 text-4xl mr-4">inventory</span>
-					<div>
-						<h2 class="text-lg font-bold text-gray-800">Total Products</h2>
-						<p class="text-3xl font-semibold text-blue-500 mt-2">{{ total_products }}</p>
-					</div>
-				</a>
-	
-				<!-- Card 2 -->
-				<a href="{% url 'categories' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
-					<span class="material-icons text-green-500 text-4xl mr-4">category</span>
-					<div>
-						<h2 class="text-lg font-bold text-gray-800">Categories</h2>
-						<p class="text-3xl font-semibold text-green-500 mt-2">{{ total_categories }}</p>
-					</div>
-				</a>
-	
-				<!-- Card 3 -->
-				<a href="{% url 'product_users' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
-					<span class="material-icons text-4xl mr-4">groups</span>
-					<div>
-						<h2 class="text-lg font-bold text-gray-800">Product Users</h2>
-						<p class="text-3xl font-semibold text-red-500 mt-2">{{ total_users }}</p>
-					</div>
-				</a>
-			</div>
-	
-			<!-- Recent Activity Section -->
-			<div class="bg-white rounded-lg shadow p-6">
-				<h2 class="text-2xl font-bold text-gray-800 mb-4">Recent Activity</h2>
-				{% if logs %}
-					<div class="overflow-x-auto">
-						<table class="w-full text-left table-auto">
-							<thead>
-								<tr class="text-gray-700 border-b">
-									<th class="px-4 py-2">Date</th>
-									<th class="px-4 py-2">Action</th>
-									<th class="px-4 py-2">User</th>
-									<th class="px-4 py-2">Details</th>
-								</tr>
-							</thead>
-							<tbody>
-								{% for log in logs %}
-									<tr class="hover:bg-gray-100">
-										<td class="px-4 py-2">{{ log.created_at }}</td>
-										<td class="px-4 py-2">{{ log.action }}</td>
-										<td class="px-4 py-2">{{ log.user }}</td>
-										<td class="px-4 py-2">{{ log.details }}</td>
-									</tr>
-								{% endfor %}
-							</tbody>
-						</table>
-					</div>
-				{% else %}
-					<div class="flex flex-col items-center justify-center text-gray-500 mt-10">
-						<span class="material-icons text-5xl mb-4">history</span>
-						<p class="text-lg font-medium">No recent activities yet</p>
-					</div>
-				{% endif %}
-			</div>
-		</div>
-	{% endblock %}
+        <!-- Main Dashboard Content -->
+        <div class="flex-1 p-6 md:p-10 overflow-x-auto md:overflow-visible overflow-y-auto">
+            <header class="mb-3">
+                <h1 class="text-3xl font-bold text-gray-800">Welcome to the Dashboard</h1>
+                <p class="text-gray-600">Here's an overview of your inventory system's performance.</p>
+            </header>
+
+            <hr class="mb-3">
+    
+            <!-- Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-3">
+                <!-- Card 1 -->
+                <a href="{% url 'products' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
+                    <span class="material-icons text-blue-500 text-4xl mr-4">inventory</span>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">Total Products</h2>
+                        <p class="text-3xl font-semibold text-blue-500 mt-2">{{ total_products }}</p>
+                    </div>
+                </a>
+    
+                <!-- Card 2 -->
+                <a href="{% url 'categories' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
+                    <span class="material-icons text-green-500 text-4xl mr-4">category</span>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">Categories</h2>
+                        <p class="text-3xl font-semibold text-green-500 mt-2">{{ total_categories }}</p>
+                    </div>
+                </a>
+    
+                <!-- Card 3 -->
+                <a href="{% url 'product_users' %}" class="p-4 bg-white rounded-lg shadow hover:shadow-md transition duration-300 flex items-center hover:scale-105">
+                    <span class="material-icons text-4xl mr-4 text-red-500">groups</span>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800">Product Users</h2>
+                        <p class="text-3xl font-semibold text-red-500 mt-2">{{ total_users }}</p>
+                    </div>
+                </a>
+            </div>
+    
+            <!-- Recent Activity Section -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Recent Activity</h2>
+                {% if logs %}
+                    <div class="overflow-y-auto max-h-[20rem]">
+                        <table class="w-full text-left table-auto">
+                            <thead>
+                                <tr class="text-gray-700 border-b">
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Action</th>
+                                    <th class="px-4 py-3">User</th>
+                                    <th class="px-4 py-3">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs %}
+                                    <tr class="hover:bg-gray-100">
+                                        <td class="px-4 py-3">{{ log.created_at }}</td>
+                                        <td class="px-4 py-3">{{ log.action }}</td>
+                                        <td class="px-4 py-3">{{ log.user }}</td>
+                                        <td class="px-4 py-3">{{ log.details }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="flex flex-col items-center justify-center text-gray-500 mt-10">
+                        <span class="material-icons text-5xl mb-4">history</span>
+                        <p class="text-lg font-medium">No recent activities yet</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endblock %}
 
 </body>
 </html>
